@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ProductMockup from './ProductMockup';
 
 interface HeroProps {
@@ -6,45 +6,6 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ onOpenDemo }) => {
-  const [aiImage, setAiImage] = useState<string | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleGenerateAI = async () => {
-    if (loading) return;
-    setLoading(true);
-    setError(null);
-
-    const prompt = 'A sleek, modern software interface for a glass workshop, showing budget calculations and material optimization plans. The UI/UX design is clean, professional, and intuitive, with blue and white as primary colors. Photorealistic rendering.';
-
-    try {
-      // In a real Vercel deployment, this hits the API route.
-      // For local development with Vite only (no Vercel CLI), this endpoint won't exist unless proxy is set up.
-      // Assuming the user will run this in a Vercel-like environment or has set up the proxy.
-      const response = await fetch('/api/generate-image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate image');
-      }
-
-      const data = await response.json();
-      if (data.imageUrl) {
-        setAiImage(data.imageUrl);
-      } else {
-        throw new Error('No image returned');
-      }
-    } catch (err: any) {
-      console.error(err);
-      setError("Error al generar imagen. Intenta de nuevo.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <section className="relative pt-32 pb-20 overflow-hidden">
       {/* Background Decor */}
@@ -98,32 +59,9 @@ const Hero: React.FC<HeroProps> = ({ onOpenDemo }) => {
           </a>
         </div>
 
-        {/* AI Showcase */}
+        {/* Mockup Showcase */}
         <div className="relative max-w-5xl mx-auto">
-          {/* AI Control */}
-          <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-20">
-            <button 
-              onClick={handleGenerateAI}
-              disabled={loading}
-              className="bg-gray-900 hover:bg-black text-white text-sm font-bold py-2.5 px-5 rounded-full shadow-lg flex items-center gap-2 border border-gray-700 transition-all disabled:opacity-70 disabled:cursor-not-allowed group"
-            >
-              {loading ? (
-                <>
-                  <i className="fa-solid fa-circle-notch fa-spin text-arista"></i> Generando...
-                </>
-              ) : (
-                <>
-                  <i className="fa-solid fa-wand-magic-sparkles text-yellow-400 group-hover:rotate-12 transition-transform"></i> Generar Vista de Producto con IA
-                </>
-              )}
-            </button>
-            {error && <div className="absolute top-full left-0 w-full mt-2 text-center text-xs text-red-500 font-bold bg-white p-1 rounded shadow">{error}</div>}
-          </div>
-
-          <ProductMockup 
-            customImage={aiImage} 
-            className="animate-float"
-          />
+          <ProductMockup className="animate-float" />
         </div>
 
         {/* Footer Info */}
