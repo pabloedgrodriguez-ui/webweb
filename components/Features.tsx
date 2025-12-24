@@ -10,7 +10,7 @@ const featuresData = [
   },
   {
     title: "Presupuestos Instantáneos",
-    desc: "Generá presupuestos profesionales en PDF en segundos. Enviáselos a tus clientes por WhatsApp directamente desde la app.",
+    desc: "Generá presupuestos profesionales en PDF en segundos. Personalizalos cargando tu propio Logo y Nombre de empresa. Enviáselos a tus clientes por WhatsApp.",
     icon: "fa-file-invoice-dollar",
     mockup: <BudgetMockup />
   },
@@ -61,9 +61,6 @@ const Features: React.FC = () => {
                     <i className="fa-solid fa-check-circle text-green-500"></i> Mayor profesionalismo
                   </li>
                 </ul>
-                <div className="pt-4">
-                  <a href="#" className="text-arista font-bold uppercase tracking-wider text-sm hover:underline">Descubrir más <i className="fa-solid fa-arrow-right ml-1"></i></a>
-                </div>
               </div>
 
               {/* Visual Content */}

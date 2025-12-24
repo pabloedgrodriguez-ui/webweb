@@ -55,18 +55,9 @@ const Problem: React.FC = () => {
         {/* Quote */}
         <div className="max-w-4xl mx-auto bg-gradient-to-r from-arista/20 to-transparent p-1 rounded-2xl">
           <div className="bg-dark-900 rounded-xl p-8 md:p-12 text-center border border-arista/30">
-            <p className="text-2xl md:text-3xl font-bold text-white mb-6 italic">
+            <p className="text-2xl md:text-3xl font-bold text-white italic">
               "Arista Studio se paga solo con lo que ahorrás en desperdicio de material el primer mes."
             </p>
-            <div className="flex items-center justify-center gap-4">
-               <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
-                 <i className="fa-solid fa-user text-gray-400"></i>
-               </div>
-               <div className="text-left">
-                 <div className="font-bold text-white">Marcelo Gómez</div>
-                 <div className="text-sm text-arista">Dueño de Vidriería Almagro</div>
-               </div>
-            </div>
           </div>
         </div>
 

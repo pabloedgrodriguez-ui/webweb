@@ -26,7 +26,7 @@ const Pricing: React.FC<PricingProps> = ({ onOpenDemo }) => {
               <span className="text-gray-400 font-medium">/ mes</span>
             </div>
             <ul className="space-y-4 mb-8">
-              {['Optimización de cortes', 'Presupuestos ilimitados', 'Base de datos de clientes', 'Soporte por email'].map((item) => (
+              {['Optimización de cortes', 'Presupuestos ilimitados', 'Base de datos de productos', 'Soporte por email'].map((item) => (
                 <li key={item} className="flex items-center gap-3 text-gray-600">
                   <i className="fa-solid fa-check text-arista"></i> {item}
                 </li>
