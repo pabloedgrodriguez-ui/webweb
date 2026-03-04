@@ -1,28 +1,53 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { MessageCircle } from 'lucide-react';
 
 const WhatsAppButton: React.FC = () => {
-  return (
-    <div className="fixed bottom-6 right-6 z-40 group">
-      {/* Tooltip */}
-      <div className="absolute bottom-full right-0 mb-4 w-48 bg-white px-4 py-2 rounded-xl shadow-lg border border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none transform translate-y-2 group-hover:translate-y-0">
-        <p className="text-xs text-gray-600 font-medium">
-          ¿Tenés dudas? <br/> <span className="font-bold text-arista">Chateá con un experto.</span>
-        </p>
-        {/* Triangle */}
-        <div className="absolute top-full right-6 w-3 h-3 bg-white transform rotate-45 -translate-y-1.5 border-b border-r border-gray-100"></div>
-      </div>
+  const [showTooltip, setShowTooltip] = React.useState(false);
 
-      {/* Button */}
-      <a 
+  React.useEffect(() => {
+    const timer = setTimeout(() => setShowTooltip(true), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="fixed bottom-8 right-8 z-50">
+      <AnimatePresence>
+        {showTooltip && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 10 }}
+            className="absolute bottom-full right-0 mb-4 w-56 bg-white p-4 rounded-2xl shadow-2xl border border-slate-100"
+          >
+            <p className="text-xs text-slate-600 font-bold leading-relaxed">
+              ¿Dudas técnicas? <br/> 
+              <span className="text-arista">Hablá con un especialista ahora.</span>
+            </p>
+            <div className="absolute top-full right-6 w-3 h-3 bg-white transform rotate-45 -translate-y-1.5 border-b border-r border-slate-100"></div>
+            <button 
+              onClick={() => setShowTooltip(false)}
+              className="absolute top-2 right-2 text-slate-300 hover:text-slate-500"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.a 
         href="https://wa.me/1234567890" 
         target="_blank" 
         rel="noopener noreferrer"
-        className="flex items-center justify-center w-16 h-16 bg-[#25D366] text-white rounded-full shadow-lg shadow-green-500/40 hover:scale-110 hover:-translate-y-1 transition-all duration-300"
+        whileHover={{ scale: 1.1, y: -4 }}
+        whileTap={{ scale: 0.9 }}
+        className="flex items-center justify-center w-16 h-16 bg-arista text-white rounded-full shadow-2xl shadow-arista/40"
       >
-        <i className="fa-brands fa-whatsapp text-3xl"></i>
-      </a>
+        <MessageCircle className="w-8 h-8 fill-current" />
+      </motion.a>
     </div>
   );
 };
 
+import { X } from 'lucide-react';
 export default WhatsAppButton;

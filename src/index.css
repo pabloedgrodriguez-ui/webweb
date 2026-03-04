@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-arista: #38bdf8; /* Sky Blue from logo */
+  --color-arista-dark: #0f172a; /* Navy from logo */
+  --color-arista-muted: #94a3b8;
+  --color-steel: #475569;
+  --color-accent-blue: #38bdf8;
+  --color-accent-orange: #fb923c; /* Orange accent from logo shadow */
+  --color-industrial: #f8fafc;
+  
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-[#fdfdfd] text-slate-900;
+    font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display tracking-[-0.04em] font-extrabold;
+  }
+}
+
+@layer utilities {
+  .bg-grid-technical {
+    background-size: 30px 30px;
+    background-image: 
+      linear-gradient(to right, rgba(88, 80, 236, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(88, 80, 236, 0.03) 1px, transparent 1px);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
+  }
+
+  .border-technical {
+    @apply border-arista-dark/10;
+  }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}

@@ -1,74 +1,76 @@
 import React from 'react';
-import { OptimizationMockup, BudgetMockup, MaterialsOrderMockup, ConfigMockup } from './FeatureMockups';
+import { motion } from 'motion/react';
+import { FileText, BarChart3, Layers, Ruler, Package } from 'lucide-react';
 
 const featuresData = [
   {
-    title: "Optimización de Planchas",
-    desc: "Nuestro algoritmo inteligente acomoda los cortes para aprovechar al máximo cada plancha de vidrio. Reducí el desperdicio hasta un 30%.",
-    icon: "fa-object-group",
-    mockup: <OptimizationMockup />
+    title: "Presupuestos",
+    desc: "Generación de presupuestos técnicos detallados con un solo clic. Profesionalismo y rapidez para tus clientes.",
+    icon: <FileText className="w-6 h-6 text-arista" />
   },
   {
-    title: "Presupuestos Instantáneos",
-    desc: "Generá presupuestos profesionales en PDF en segundos. Personalizalos cargando tu propio Logo y Nombre de empresa. Enviáselos a tus clientes por WhatsApp.",
-    icon: "fa-file-invoice-dollar",
-    mockup: <BudgetMockup />
+    title: "Auditoría de Costos",
+    desc: "Control total sobre tus márgenes. Analiza costos en tiempo real y evita pérdidas por inflación.",
+    icon: <BarChart3 className="w-6 h-6 text-arista" />
+  },
+  {
+    title: "Optimización de Aluminio",
+    desc: "Algoritmos avanzados para el máximo aprovechamiento de perfiles de 6m. Reduce el desperdicio al mínimo.",
+    icon: <Layers className="w-6 h-6 text-arista" />
+  },
+  {
+    title: "Optimización de Vidrios",
+    desc: "Cálculo exacto de paños y descuentos. Planos de corte precisos para enviar directamente a fábrica.",
+    icon: <Ruler className="w-6 h-6 text-arista" />
   },
   {
     title: "Pedido de Materiales",
-    desc: "Controlá tu stock y generá órdenes de compra automáticas para tus proveedores cuando el material esté bajo.",
-    icon: "fa-box-open",
-    mockup: <MaterialsOrderMockup />
-  },
-  {
-    title: "Totalmente Configurable",
-    desc: "Ajustá precios de dólar, márgenes de ganancia, desperdicio base y costos de mano de obra a tu medida.",
-    icon: "fa-cog",
-    mockup: <ConfigMockup />
+    desc: "Listados automáticos de perfiles, herrajes y accesorios. Exportación a PDF lista para tus proveedores.",
+    icon: <Package className="w-6 h-6 text-arista" />
   }
 ];
 
 const Features: React.FC = () => {
   return (
-    <section id="solucion" className="py-24 bg-white overflow-hidden">
+    <section id="solucion" className="py-24 bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-20">
-          <h2 className="text-arista font-bold tracking-widest uppercase mb-4 text-sm">La Solución Definitiva</h2>
-          <h3 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight">
-            El Futuro de tu Vidriería, Hoy.
-          </h3>
-          <p className="text-xl text-gray-500 max-w-2xl mx-auto">
-            Menos Errores, Más Ganancias. Simple.
-          </p>
+        <div className="text-center mb-16">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-4xl font-extrabold text-arista-dark tracking-tight mb-4"
+          >
+            Todo lo que tu taller necesita
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-slate-500 font-medium max-w-2xl mx-auto"
+          >
+            Herramientas diseñadas específicamente para profesionales del aluminio y vidrio.
+          </motion.p>
         </div>
 
-        <div className="space-y-24">
+        <div className="grid md:grid-cols-3 gap-8">
           {featuresData.map((feature, index) => (
-            <div key={index} className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-20 ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
-              
-              {/* Text Content */}
-              <div className="flex-1 space-y-6">
-                <div className="w-16 h-16 bg-arista/10 rounded-2xl flex items-center justify-center mb-6">
-                  <i className={`fa-solid ${feature.icon} text-3xl text-arista`}></i>
-                </div>
-                <h4 className="text-3xl font-black text-gray-900">{feature.title}</h4>
-                <p className="text-lg text-gray-500 leading-relaxed">{feature.desc}</p>
-                <ul className="space-y-3 pt-4">
-                  <li className="flex items-center gap-3 text-gray-700 font-medium">
-                    <i className="fa-solid fa-check-circle text-green-500"></i> Ahorro inmediato de tiempo
-                  </li>
-                  <li className="flex items-center gap-3 text-gray-700 font-medium">
-                    <i className="fa-solid fa-check-circle text-green-500"></i> Mayor profesionalismo
-                  </li>
-                </ul>
+            <motion.div 
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow"
+            >
+              <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mb-6">
+                {feature.icon}
               </div>
-
-              {/* Visual Content */}
-              <div className="flex-1 w-full max-w-lg lg:max-w-none">
-                {feature.mockup}
-              </div>
-
-            </div>
+              <h3 className="text-xl font-bold text-arista-dark mb-3">{feature.title}</h3>
+              <p className="text-slate-500 text-sm leading-relaxed">
+                {feature.desc}
+              </p>
+            </motion.div>
           ))}
         </div>
       </div>

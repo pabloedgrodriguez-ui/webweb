@@ -3,7 +3,7 @@ export interface DemoFormData {
   company: string;
   whatsapp: string;
   email: string;
-  interest: 'Demo 7 Días' | 'Pago Mensual' | 'Pago Anual';
+  interest: 'Demo 7 Días' | 'Pago Mensual' | 'Pago Anual' | 'ARISTASTUDIO ALUM (Premium)';
 }
 
 export interface ImageGenerationResponse {

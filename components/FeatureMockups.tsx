@@ -80,15 +80,18 @@ export const BudgetMockup: React.FC = () => (
                         <path d="M20 12L28 20L20 28L12 20Z" fill="currentColor"/>
                      </svg>
                 </div>
-                <div className="leading-none">
-                    <div className="font-black text-[#005c8f] text-[10px] tracking-wide">ARISTA</div>
-                    <div className="font-bold text-[#0090FF] text-[8px] tracking-widest">ESTUDIO</div>
+                <div className="flex items-baseline">
+                    <span className="text-arista-dark font-black text-[10px] tracking-tighter drop-shadow-[0.5px_0.5px_0px_rgba(251,146,60,0.5)]">ARISTA</span>
+                    <span className="text-arista font-light text-[10px] tracking-tighter">ESTUDIO</span>
                 </div>
             </div>
 
             {/* Center Title */}
             <div className="text-center absolute left-1/2 transform -translate-x-1/2 top-5">
-                <div className="font-bold text-gray-900 text-sm tracking-tight mb-0.5">ARISTA STUDIO</div>
+                <div className="flex items-baseline">
+                    <span className="text-arista-dark font-black text-sm tracking-tighter drop-shadow-[0.5px_0.5px_0px_rgba(251,146,60,0.5)]">ARISTA</span>
+                    <span className="text-arista font-light text-sm tracking-tighter">ESTUDIO</span>
+                </div>
                 <div className="text-gray-500 text-[6px] tracking-wide">Soluciones en Vidrio</div>
             </div>
 
@@ -173,9 +176,9 @@ export const MaterialsOrderMockup: React.FC = () => (
             <div className="w-6 h-6 bg-arista rounded flex items-center justify-center">
                  <span className="text-white font-bold text-[8px]">A</span>
             </div>
-            <div className="leading-none">
-                 <div className="text-arista font-bold text-[8px]">ARISTA</div>
-                 <div className="text-gray-400 text-[6px]">ESTUDIO</div>
+            <div className="flex items-baseline">
+                 <span className="text-arista-dark font-black text-[8px] tracking-tighter drop-shadow-[0.5px_0.5px_0px_rgba(251,146,60,0.5)]">ARISTA</span>
+                 <span className="text-arista font-light text-[8px] tracking-tighter">ESTUDIO</span>
             </div>
          </div>
 
@@ -306,9 +309,9 @@ export const ConfigMockup: React.FC = () => (
         <div className="flex-1 bg-gray-50/50 p-4 overflow-y-auto overflow-x-hidden no-scrollbar">
             
             {/* Header */}
-            <div className="flex items-center gap-2 mb-4">
-                <div className="w-6 h-6 bg-arista rounded flex items-center justify-center text-white font-bold text-[8px]">A</div>
-                <span className="font-bold text-gray-800 text-xs tracking-tight">ARISTA<span className="text-arista">ESTUDIO</span></span>
+            <div className="flex items-baseline">
+                <span className="text-arista-dark font-black text-xs tracking-tighter drop-shadow-[0.5px_0.5px_0px_rgba(251,146,60,0.5)]">ARISTA</span>
+                <span className="text-arista font-light text-xs tracking-tighter">ESTUDIO</span>
             </div>
 
             <div className="grid grid-cols-1 gap-3 max-w-sm mx-auto">
@@ -316,9 +319,9 @@ export const ConfigMockup: React.FC = () => (
                 <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
                     <div className="flex gap-3">
                         <div className="w-16 h-16 border border-gray-100 rounded-lg flex items-center justify-center p-1 bg-white shadow-sm">
-                             <div className="leading-none text-center">
-                                 <div className="w-4 h-4 mx-auto bg-arista rounded-sm flex items-center justify-center mb-0.5"><span className="text-white text-[6px] font-bold">A</span></div>
-                                 <div className="text-[5px] font-bold text-[#005c8f]">ARISTA<br/><span className="text-arista">ESTUDIO</span></div>
+                             <div className="flex items-baseline">
+                                 <span className="text-arista-dark font-black text-[6px] tracking-tighter drop-shadow-[0.2px_0.2px_0px_rgba(251,146,60,0.5)]">ARISTA</span>
+                                 <span className="text-arista font-light text-[6px] tracking-tighter">ESTUDIO</span>
                              </div>
                         </div>
                         <div className="flex-1 space-y-2">
@@ -327,7 +330,10 @@ export const ConfigMockup: React.FC = () => (
                              </button>
                              <div>
                                  <label className="text-[7px] font-bold text-gray-400 mb-0.5 flex items-center gap-1"><i className="fa-solid fa-font"></i> NOMBRE DE LA EMPRESA</label>
-                                 <div className="border border-gray-200 rounded-lg px-2 py-1.5 text-[9px] font-bold text-gray-700 bg-white shadow-sm">ARISTA STUDIO</div>
+                                 <div className="border border-gray-200 rounded-lg px-2 py-1.5 text-[9px] flex items-baseline bg-white shadow-sm">
+                                     <span className="text-arista-dark font-black tracking-tighter drop-shadow-[0.5px_0.5px_0px_rgba(251,146,60,0.5)]">ARISTA</span>
+                                     <span className="text-arista font-light tracking-tighter">ESTUDIO</span>
+                                 </div>
                              </div>
                         </div>
                     </div>
