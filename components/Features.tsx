@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { FileText, BarChart3, Layers, Ruler, Package } from 'lucide-react';
+import { FileText, BarChart3, Layers, Ruler, Package, Smartphone } from 'lucide-react';
 
 const featuresData = [
   {
@@ -27,6 +27,11 @@ const featuresData = [
     title: "Pedido de Materiales",
     desc: "Listados automáticos de perfiles, herrajes y accesorios. Exportación a PDF lista para tus proveedores.",
     icon: <Package className="w-6 h-6 text-arista" />
+  },
+  {
+    title: "Multi-dispositivo",
+    desc: "Accede a tu taller desde cualquier lugar. AristaStudio es 100% compatible con celulares, tablets y computadoras.",
+    icon: <Smartphone className="w-6 h-6 text-arista" />
   }
 ];
 
