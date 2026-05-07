@@ -7,7 +7,7 @@ interface DemoModalProps {
 }
 
 const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
-  const [step, setStep] = useState<0 | 1 | 2>(0);
+  const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
   const [isLoading, setIsLoading] = useState(false);
 
   // Reset to first step when modal closes
@@ -41,31 +41,21 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
     setIsLoading(true);
 
     try {
-      // Send automated email to the user with the contract
-      // We do it without blocking the main flow to avoid issues if the API key is not configured
-      fetch('/api/send-email', {
+      // Send automated emails: contract to user and notification to admin
+      await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: formData.email,
-          name: formData.name
+          name: formData.name,
+          company: formData.company,
+          whatsapp: formData.whatsapp,
+          interest: formData.interest
         }),
       }).then(res => res.json())
         .then(data => console.log('Email automation result:', data))
         .catch(err => console.error('Email automation failed:', err));
 
-      // Also open WhatsApp for direct contact as before
-      const message = encodeURIComponent(
-        `NUEVA SOLICITUD DESDE LA WEB\n\n` +
-        `PRODUCTO: ${formData.interest}\n` +
-        `NOMBRE: ${formData.name}\n` +
-        `EMPRESA: ${formData.company}\n` +
-        `WHATSAPP: ${formData.whatsapp}\n` +
-        `EMAIL: ${formData.email}`
-      );
-      
-      window.open(`https://wa.me/5492615555555?text=${message}`, '_blank');
-      
       setStep(2);
     } catch (error) {
       console.error('Error al procesar la solicitud:', error);
@@ -76,8 +66,12 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleGoToTrialMessage = () => {
+    setStep(3);
+  };
+
   const handleFinalAccess = () => {
-    window.open('https://aristastudio01.vercel.app/', '_blank');
+    window.open('https://www.aristastudioalum.com.ar/', '_blank');
     onClose();
   };
 
@@ -89,8 +83,8 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
         <div className="p-12">
           <div className="flex justify-between items-start mb-8">
             <div>
-              <h3 className="text-4xl font-black text-arista-dark tracking-tighter leading-none mb-2">
-                {step === 0 ? 'TÉRMINOS Y CONDICIONES' : step === 1 ? 'SOLICITUD DE ACCESO' : '¡TODO LISTO!'}
+              <h3 className="text-4xl font-black text-arista-dark tracking-tighter leading-none mb-2 text-balance">
+                {step === 0 ? 'TÉRMINOS Y CONDICIONES' : step === 1 ? 'SOLICITUD DE ACCESO' : step === 2 ? '¡SOLICITUD ENVIADA!' : 'VERSIÓN DEMO'}
               </h3>
               <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em]">Arista Studio Professional</p>
             </div>
@@ -218,17 +212,41 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
                 )}
               </button>
             </form>
-          ) : (
+          ) : step === 2 ? (
             <div className="text-center py-12">
               <div className="w-24 h-24 bg-arista/10 text-arista rounded-full flex items-center justify-center mx-auto mb-8">
                 <Check className="w-12 h-12" />
               </div>
-              <h4 className="text-3xl font-black text-arista-dark mb-4 uppercase tracking-tighter">¡SOLICITUD ENVIADA!</h4>
-              <p className="text-slate-500 mb-12 leading-relaxed font-medium text-balance">
-                Recuerda presionar "Enviar" en tu aplicación de correo para que recibamos los datos.
-              </p>
-              <button onClick={handleFinalAccess} className="w-full bg-arista-dark hover:bg-arista text-white font-black py-6 rounded-full shadow-2xl shadow-arista-dark/20 transition-all uppercase tracking-widest text-xs">
-                INGRESAR A LA PLATAFORMA
+              <h4 className="text-3xl font-black text-arista-dark mb-4 uppercase tracking-tighter text-balance leading-none">¡SOLICITUD ENVIADA!</h4>
+              <div className="bg-slate-50 p-6 rounded-3xl mb-12">
+                <p className="text-slate-500 leading-relaxed font-medium text-balance text-sm">
+                  Hemos enviado los Términos y Condiciones a <strong>{formData.email}</strong>.<br/><br/>
+                  Nuestro equipo revisará tu solicitud y nos pondremos en contacto a la brevedad.
+                </p>
+              </div>
+              <button 
+                onClick={handleGoToTrialMessage} 
+                className="w-full bg-arista-dark hover:bg-arista text-white font-black py-6 rounded-full shadow-2xl shadow-arista-dark/20 transition-all uppercase tracking-widest text-xs"
+              >
+                CONTINUAR AL DEMO
+              </button>
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="w-24 h-24 bg-arista/10 text-arista rounded-full flex items-center justify-center mx-auto mb-8">
+                <Clock className="w-12 h-12" />
+              </div>
+              <h4 className="text-3xl font-black text-arista-dark mb-4 uppercase tracking-tighter text-balance leading-none">AVISO IMPORTANTE</h4>
+              <div className="bg-arista/5 p-8 rounded-[2rem] border border-arista/10 mb-12">
+                <p className="text-arista-dark text-lg font-bold leading-tight">
+                  Usted está ingresando a la versión de prueba que dura 7 días.
+                </p>
+              </div>
+              <button 
+                onClick={handleFinalAccess} 
+                className="w-full bg-arista hover:bg-arista-dark text-white font-black py-6 rounded-full shadow-2xl shadow-arista/20 transition-all uppercase tracking-widest text-xs"
+              >
+                ACEPTAR Y ENTRAR
               </button>
             </div>
           )}
@@ -238,6 +256,6 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
   );
 };
 
-import { X, Check } from 'lucide-react';
+import { X, Check, Clock } from 'lucide-react';
 
 export default DemoModal;

@@ -11,7 +11,7 @@ async function startServer() {
 
   // API Route for sending email
   app.post('/api/send-email', async (req, res) => {
-    const { email, name } = req.body;
+    const { email, name, company, whatsapp, interest } = req.body;
 
     if (!email || !name) {
       return res.status(400).json({ error: 'Faltan datos requeridos (email o nombre).' });
@@ -59,14 +59,31 @@ Fecha: ${new Date().toLocaleDateString()}
     `;
 
     try {
-      const data = await resend.emails.send({
+      // 1. Send contract to user
+      await resend.emails.send({
         from: 'Arista Studio <onboarding@resend.dev>',
         to: email,
         subject: 'Términos y Condiciones - Arista Studio Alum',
         text: contractText,
       });
 
-      res.json({ success: true, data });
+      // 2. Send notification to admin
+      await resend.emails.send({
+        from: 'Arista Web <onboarding@resend.dev>',
+        to: 'aristastudiouno@gmail.com',
+        subject: `NUEVA SOLICITUD: ${name} - ${company}`,
+        text: `
+NUEVA SOLICITUD DESDE LA WEB
+----------------------------
+NOMBRE: ${name}
+EMPRESA: ${company}
+WHATSAPP: ${whatsapp}
+EMAIL: ${email}
+INTERÉS: ${interest}
+        `,
+      });
+
+      res.json({ success: true });
     } catch (error) {
       console.error('Error al enviar el correo:', error);
       res.status(500).json({ error: 'Error al enviar el correo.' });
