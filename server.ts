@@ -59,16 +59,26 @@ Fecha: ${new Date().toLocaleDateString()}
     `;
 
     try {
+      console.log(`Intentando enviar emails para: ${email}`);
       // 1. Send contract to user
-      await resend.emails.send({
+      const userEmailResponse = await resend.emails.send({
         from: 'Arista Studio <onboarding@resend.dev>',
         to: email,
         subject: 'Términos y Condiciones - Arista Studio Alum',
         text: contractText,
       });
 
+      if (userEmailResponse.error) {
+        console.error('Error de Resend (Email Usuario):', userEmailResponse.error);
+        return res.status(400).json({ 
+          success: false, 
+          error: userEmailResponse.error.message,
+          details: 'Si usas cuenta gratuita de Resend, solo puedes enviar a tu propio email registrado.'
+        });
+      }
+
       // 2. Send notification to admin
-      await resend.emails.send({
+      const adminEmailResponse = await resend.emails.send({
         from: 'Arista Web <onboarding@resend.dev>',
         to: 'aristastudiouno@gmail.com',
         subject: `NUEVA SOLICITUD: ${name} - ${company}`,
@@ -83,10 +93,18 @@ INTERÉS: ${interest}
         `,
       });
 
+      if (adminEmailResponse.error) {
+        console.warn('Error de Resend (Email Admin):', adminEmailResponse.error);
+        // Note: We don't fail the whole request if the admin notification fails but user got the contract
+      }
+
       res.json({ success: true });
-    } catch (error) {
-      console.error('Error al enviar el correo:', error);
-      res.status(500).json({ error: 'Error al enviar el correo.' });
+    } catch (error: any) {
+      console.error('Error crítico al enviar el correo:', error);
+      res.status(500).json({ 
+        error: 'Error interno al enviar el correo.',
+        message: error?.message || 'Error desconocido'
+      });
     }
   });
 
