@@ -38,6 +38,14 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Basic frontend email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Por favor ingresa un email válido.');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -50,14 +58,20 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
         body: JSON.stringify(formData),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Error al enviar la solicitud');
+        // Provide more specific error messages based on server response
+        if (data.details && data.details.includes('verified')) {
+          throw new Error('Error: Destinatario no verificado en Resend (Sandbox).');
+        }
+        throw new Error(data.error || 'Error al enviar la solicitud');
       }
 
       setStep(2);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError('Hubo un problema al enviar tu solicitud. Por favor intenta de nuevo.');
+      setError(err.message || 'Hubo un problema al enviar tu solicitud. Por favor intenta de nuevo.');
     } finally {
       setIsLoading(false);
     }
