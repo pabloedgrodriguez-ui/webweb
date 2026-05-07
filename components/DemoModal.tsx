@@ -111,7 +111,7 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
                 <div>
                   <p className="font-bold text-slate-800 mb-1">2. Modelo de Suscripción y Pagos</p>
                   <ul className="list-disc ml-4 space-y-1">
-                    <li><span className="font-bold">Costo:</span> El acceso al servicio tiene un valor mensual de $35 USD.</li>
+                    <li><span className="font-bold">Costo:</span> El acceso al servicio tiene un valor mensual de $36 USD.</li>
                     <li><span className="font-bold">Activación:</span> Las cuentas se activan manualmente tras la confirmación del pago vía WhatsApp.</li>
                     <li><span className="font-bold">Dispositivos:</span> El uso de la cuenta está limitado a un máximo de dos (2) dispositivos simultáneos por usuario.</li>
                   </ul>

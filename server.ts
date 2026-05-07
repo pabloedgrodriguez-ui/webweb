@@ -32,7 +32,7 @@ Términos y Condiciones de Uso - Arista Studio Alum
 Arista Studio Alum es una plataforma SaaS diseñada para la automatización de presupuestos, optimización de materiales y generación de hojas de taller para carpintería de aluminio. El software se entrega "tal cual", como una herramienta de apoyo a la gestión profesional.
 
 2. Modelo de Suscripción y Pagos
-• Costo: El acceso al servicio tiene un valor mensual de $35 USD.
+• Costo: El acceso al servicio tiene un valor mensual de $36 USD.
 • Activación: Las cuentas se activan manualmente tras la confirmación del pago vía WhatsApp.
 • Dispositivos: El uso de la cuenta está limitado a un máximo de dos (2) dispositivos simultáneos por usuario.
 
