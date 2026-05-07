@@ -29,23 +29,22 @@ async function startServer() {
 
   // Debug logging
   app.use((req, res, next) => {
-    if (req.url.startsWith('/api')) {
-      console.log(`[API Request] ${req.method} ${req.url}`);
-    }
+    console.log(`[Incoming Request] ${req.method} ${req.url}`);
     next();
   });
 
   // Health check
-  app.get(["/api/health", "/api/health/"], (req, res) => {
+  app.get(["/health", "/api/health"], (req, res) => {
     res.json({ 
       status: "ok", 
       resendConfigured: !!process.env.RESEND_API_KEY,
-      env: process.env.NODE_ENV || 'development'
+      env: process.env.NODE_ENV || 'development',
+      timestamp: new Date().toISOString()
     });
   });
 
-  // API Route for demo requests
-  app.post(["/api/demo-request", "/api/demo-request/"], async (req, res) => {
+  // API Route for demo requests - Changed to a more unique path
+  app.post(["/demo-submission", "/api/demo-submission"], async (req, res) => {
     try {
       const { name, company, whatsapp, email, interest } = req.body;
 

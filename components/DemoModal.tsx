@@ -50,7 +50,7 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
     setError(null);
 
     try {
-      const response = await fetch('/api/demo-request', {
+      const response = await fetch('/demo-submission', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
