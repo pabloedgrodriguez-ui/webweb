@@ -7,7 +7,17 @@ interface DemoModalProps {
 }
 
 const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<0 | 1 | 2>(0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Reset to first step when modal closes
+  React.useEffect(() => {
+    if (!isOpen) {
+      setStep(0);
+      setIsLoading(false);
+    }
+  }, [isOpen]);
+
   const [formData, setFormData] = useState<DemoFormData>({
     name: '',
     company: '',
@@ -26,43 +36,48 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
     setFormData({ ...formData, interest });
   };
 
-  const constructMailtoLink = () => {
-    const isAlum = formData.interest === 'ARISTASTUDIO ALUM (Premium)';
-    const subject = encodeURIComponent(`NUEVO LEAD ${isAlum ? '🔥 ALUM' : '💎'}: ${formData.interest} - ${formData.company}`);
-    
-    const body = encodeURIComponent(
-      `NUEVA SOLICITUD DESDE LA WEB\n` +
-      `------------------------------------------------\n` +
-      `PRODUCTO: ${formData.interest.toUpperCase()}\n` +
-      `------------------------------------------------\n\n` +
-      `DATOS DEL INTERESADO:\n` +
-      `• Nombre: ${formData.name}\n` +
-      `• Empresa: ${formData.company}\n` +
-      `• WhatsApp: ${formData.whatsapp}\n` +
-      `• Email: ${formData.email}\n\n` +
-      `------------------------------------------------\n` +
-      `Responder a este correo para coordinar acceso.`
-    );
-    
-    const recipients = "aristastudiouno@gmail.com,pabloedgrodriguez@gmail.com";
-    return `mailto:${recipients}?subject=${subject}&body=${body}`;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const link = document.createElement('a');
-    link.href = constructMailtoLink();
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setStep(2);
+    setIsLoading(true);
+
+    try {
+      // Send automated email to the user with the contract
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          name: formData.name
+        }),
+      });
+
+      const result = await response.json();
+      console.log('Email automation:', result);
+
+      // Also open WhatsApp for direct contact as before
+      const message = encodeURIComponent(
+        `NUEVA SOLICITUD DESDE LA WEB\n\n` +
+        `PRODUCTO: ${formData.interest}\n` +
+        `NOMBRE: ${formData.name}\n` +
+        `EMPRESA: ${formData.company}\n` +
+        `WHATSAPP: ${formData.whatsapp}\n` +
+        `EMAIL: ${formData.email}`
+      );
+      
+      window.open(`https://wa.me/5492615555555?text=${message}`, '_blank');
+      
+      setStep(2);
+    } catch (error) {
+      console.error('Error al procesar la solicitud:', error);
+      alert('Hubo un error al procesar tu solicitud. Por favor intenta de nuevo.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleFinalAccess = () => {
     window.open('https://aristastudio01.vercel.app/', '_blank');
     onClose();
-    setTimeout(() => setStep(1), 500); 
   };
 
   return (
@@ -71,10 +86,10 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
       <div className="relative bg-white rounded-[3rem] shadow-2xl w-full max-w-xl overflow-hidden animate-fade-in-up transition-all transform max-h-[95vh] overflow-y-auto border border-slate-100">
         
         <div className="p-12">
-          <div className="flex justify-between items-start mb-12">
+          <div className="flex justify-between items-start mb-8">
             <div>
               <h3 className="text-4xl font-black text-arista-dark tracking-tighter leading-none mb-2">
-                {step === 1 ? 'SOLICITUD DE ACCESO' : '¡TODO LISTO!'}
+                {step === 0 ? 'TÉRMINOS Y CONDICIONES' : step === 1 ? 'SOLICITUD DE ACCESO' : '¡TODO LISTO!'}
               </h3>
               <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em]">Arista Studio Professional</p>
             </div>
@@ -83,7 +98,66 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
             </button>
           </div>
 
-          {step === 1 ? (
+          {step === 0 ? (
+            <div className="space-y-6">
+              <div className="bg-slate-50 p-8 rounded-3xl h-96 overflow-y-auto text-sm text-slate-600 leading-relaxed space-y-6 border border-slate-100">
+                <p className="font-bold text-arista-dark">Términos y Condiciones de Uso - Arista Studio Alum</p>
+                
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">1. Objeto del Servicio</p>
+                  <p>Arista Studio Alum es una plataforma SaaS diseñada para la automatización de presupuestos, optimización de materiales y generación de hojas de taller para carpintería de aluminio. El software se entrega "tal cual", como una herramienta de apoyo a la gestión profesional.</p>
+                </div>
+
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">2. Modelo de Suscripción y Pagos</p>
+                  <ul className="list-disc ml-4 space-y-1">
+                    <li><span className="font-bold">Costo:</span> El acceso al servicio tiene un valor mensual de $35 USD.</li>
+                    <li><span className="font-bold">Activación:</span> Las cuentas se activan manualmente tras la confirmación del pago vía WhatsApp.</li>
+                    <li><span className="font-bold">Dispositivos:</span> El uso de la cuenta está limitado a un máximo de dos (2) dispositivos simultáneos por usuario.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">3. Responsabilidad sobre los Datos</p>
+                  <ul className="list-disc ml-4 space-y-1">
+                    <li><span className="font-bold">Uso Técnico:</span> El usuario es el único responsable de la exactitud de los datos ingresados en el sistema (medidas, tipos de perfiles y fórmulas de corte).</li>
+                    <li><span className="font-bold">Resultados:</span> La aplicación no se responsabiliza por errores en la fabricación derivados de una carga de datos incorrecta o interpretaciones erróneas de las hojas de optimización.</li>
+                    <li><span className="font-bold">Propiedad de los Datos:</span> El usuario mantiene la propiedad de sus bases de datos de materiales y recetas.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">4. Propiedad Intelectual</p>
+                  <p>Todo el código fuente, diseño de interfaz ("Industrial Premium"), logotipos y algoritmos de optimización son propiedad exclusiva de Arista Studio Alum. Queda prohibida la ingeniería inversa o la copia parcial del sistema.</p>
+                </div>
+
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">5. Disponibilidad y Soporte</p>
+                  <ul className="list-disc ml-4 space-y-1">
+                    <li><span className="font-bold">Infraestructura:</span> El servicio depende de proveedores externos (Vercel, Supabase, GitHub). No se garantizan servicios ininterrumpidos en caso de fallas en dichos proveedores.</li>
+                    <li><span className="font-bold">Mantenimiento:</span> Nos reservamos el derecho de realizar tareas de mantenimiento y reestructuración de bases de datos para garantizar el rendimiento del sistema.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">6. Terminación del Servicio</p>
+                  <p>El incumplimiento de los pagos mensuales o el uso de la cuenta en más de dos dispositivos resultará en la suspensión inmediata del acceso sin previo aviso.</p>
+                </div>
+
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">7. Jurisdicción</p>
+                  <p>Para cualquier controversia legal, las partes se someten a la jurisdicción de los tribunales correspondientes a la ciudad de Mendoza, Argentina.</p>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => setStep(1)} 
+                className="w-full bg-arista hover:bg-arista-dark text-white font-black py-6 rounded-full shadow-2xl shadow-arista/20 transition-all uppercase tracking-widest text-xs"
+              >
+                ACEPTO
+              </button>
+            </div>
+          ) : step === 1 ? (
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="grid gap-6">
                 <div className="grid md:grid-cols-2 gap-6">
@@ -128,8 +202,19 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
-              <button type="submit" className="w-full bg-arista-dark hover:bg-arista text-white font-black py-6 rounded-full shadow-2xl shadow-arista-dark/20 transition-all uppercase tracking-widest text-xs mt-4">
-                SOLICITAR ACCESO AHORA
+              <button 
+                type="submit" 
+                disabled={isLoading}
+                className={`w-full bg-arista-dark hover:bg-arista text-white font-black py-6 rounded-full shadow-2xl shadow-arista-dark/20 transition-all uppercase tracking-widest text-xs mt-4 flex items-center justify-center gap-3 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              >
+                {isLoading ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    PROCESANDO...
+                  </>
+                ) : (
+                  'SOLICITAR ACCESO AHORA'
+                )}
               </button>
             </form>
           ) : (
