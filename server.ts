@@ -3,8 +3,9 @@ import { createServer as createViteServer } from "vite";
 import path from "path";
 import { Resend } from "resend";
 import cors from "cors";
+import "dotenv/config";
 
-// Initialize Resend Client lazily to handle missing API keys gracefully at startup
+// Initialize Resend Client lazily
 let resendClient: Resend | null = null;
 
 function getResendClient() {
@@ -24,9 +25,27 @@ async function startServer() {
 
   app.use(cors());
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  // Debug logging
+  app.use((req, res, next) => {
+    if (req.url.startsWith('/api')) {
+      console.log(`[API Request] ${req.method} ${req.url}`);
+    }
+    next();
+  });
+
+  // Health check
+  app.get(["/api/health", "/api/health/"], (req, res) => {
+    res.json({ 
+      status: "ok", 
+      resendConfigured: !!process.env.RESEND_API_KEY,
+      env: process.env.NODE_ENV || 'development'
+    });
+  });
 
   // API Route for demo requests
-  app.post("/api/demo-request", async (req, res) => {
+  app.post(["/api/demo-request", "/api/demo-request/"], async (req, res) => {
     try {
       const { name, company, whatsapp, email, interest } = req.body;
 
@@ -113,6 +132,15 @@ async function startServer() {
       console.error("Server error:", err);
       res.status(500).json({ error: "Error interno del servidor" });
     }
+  });
+
+  // Global error handler
+  app.use((err: any, req: any, res: any, next: any) => {
+    console.error('Unhandled Error:', err);
+    res.status(500).json({ 
+      error: 'Error interno del servidor', 
+      message: err.message || 'Error desconocido' 
+    });
   });
 
   // Vite middleware for development

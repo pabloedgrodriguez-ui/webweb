@@ -65,10 +65,11 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
       if (contentType && contentType.includes('application/json')) {
         data = await response.json();
       } else {
-        // If it's not JSON, it's likely an HTML error page from the server
+        // If it's not JSON, it's likely an HTML error page or a network issue
         const text = await response.text();
         console.error('Server returned non-JSON response:', text);
-        throw new Error('El servidor no respondió correctamente. Verifica la configuración de la clave de API.');
+        const preview = text.slice(0, 50).replace(/<[^>]*>?/gm, '');
+        throw new Error(`Error del servidor (formato no válido). Respuesta: ${preview || 'HTML/Texto'}`);
       }
 
       if (!response.ok) {
