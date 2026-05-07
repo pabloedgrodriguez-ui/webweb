@@ -7,14 +7,14 @@ interface DemoModalProps {
 }
 
 const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
-  const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
+  const [step, setStep] = useState<0 | 1 | 2>(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Reset to first step when modal closes
   React.useEffect(() => {
     if (!isOpen) {
       setStep(0);
-      setIsLoading(false);
     }
   }, [isOpen]);
 
@@ -39,39 +39,32 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
     try {
-      // Send automated emails: contract to user and notification to admin
-      await fetch('/api/send-email', {
+      const response = await fetch('/api/demo-request', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.email,
-          name: formData.name,
-          company: formData.company,
-          whatsapp: formData.whatsapp,
-          interest: formData.interest
-        }),
-      }).then(res => res.json())
-        .then(data => console.log('Email automation result:', data))
-        .catch(err => console.error('Email automation failed:', err));
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al enviar la solicitud');
+      }
 
       setStep(2);
-    } catch (error) {
-      console.error('Error al procesar la solicitud:', error);
-      // Even if something fails here, we try to move to success step
-      setStep(2);
+    } catch (err) {
+      console.error(err);
+      setError('Hubo un problema al enviar tu solicitud. Por favor intenta de nuevo.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleGoToTrialMessage = () => {
-    setStep(3);
-  };
-
   const handleFinalAccess = () => {
-    window.open('https://www.aristastudioalum.com.ar/', '_blank');
+    window.open('https://aristastudio01.vercel.app/', '_blank');
     onClose();
   };
 
@@ -83,8 +76,8 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
         <div className="p-12">
           <div className="flex justify-between items-start mb-8">
             <div>
-              <h3 className="text-4xl font-black text-arista-dark tracking-tighter leading-none mb-2 text-balance">
-                {step === 0 ? 'TÉRMINOS Y CONDICIONES' : step === 1 ? 'SOLICITUD DE ACCESO' : step === 2 ? '¡SOLICITUD ENVIADA!' : 'VERSIÓN DEMO'}
+              <h3 className="text-4xl font-black text-arista-dark tracking-tighter leading-none mb-2">
+                {step === 0 ? 'TÉRMINOS Y CONDICIONES' : step === 1 ? 'SOLICITUD DE ACCESO' : '¡TODO LISTO!'}
               </h3>
               <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em]">Arista Studio Professional</p>
             </div>
@@ -106,7 +99,7 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
                 <div>
                   <p className="font-bold text-slate-800 mb-1">2. Modelo de Suscripción y Pagos</p>
                   <ul className="list-disc ml-4 space-y-1">
-                    <li><span className="font-bold">Costo:</span> El acceso al servicio tiene un valor mensual de $36 USD.</li>
+                    <li><span className="font-bold">Costo:</span> El acceso al servicio tiene un valor mensual de $35 USD.</li>
                     <li><span className="font-bold">Activación:</span> Las cuentas se activan manualmente tras la confirmación del pago vía WhatsApp.</li>
                     <li><span className="font-bold">Dispositivos:</span> El uso de la cuenta está limitado a un máximo de dos (2) dispositivos simultáneos por usuario.</li>
                   </ul>
@@ -197,14 +190,20 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
+              {error && (
+                <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest text-center">
+                  {error}
+                </p>
+              )}
+
               <button 
                 type="submit" 
                 disabled={isLoading}
-                className={`w-full bg-arista-dark hover:bg-arista text-white font-black py-6 rounded-full shadow-2xl shadow-arista-dark/20 transition-all uppercase tracking-widest text-xs mt-4 flex items-center justify-center gap-3 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                className={`w-full bg-arista-dark hover:bg-arista text-white font-black py-6 rounded-full shadow-2xl shadow-arista-dark/20 transition-all uppercase tracking-widest text-xs mt-4 flex items-center justify-center gap-2 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
               >
                 {isLoading ? (
                   <>
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    <Loader2 className="w-4 h-4 animate-spin" />
                     PROCESANDO...
                   </>
                 ) : (
@@ -212,41 +211,17 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
                 )}
               </button>
             </form>
-          ) : step === 2 ? (
+          ) : (
             <div className="text-center py-12">
               <div className="w-24 h-24 bg-arista/10 text-arista rounded-full flex items-center justify-center mx-auto mb-8">
                 <Check className="w-12 h-12" />
               </div>
-              <h4 className="text-3xl font-black text-arista-dark mb-4 uppercase tracking-tighter text-balance leading-none">¡SOLICITUD ENVIADA!</h4>
-              <div className="bg-slate-50 p-6 rounded-3xl mb-12">
-                <p className="text-slate-500 leading-relaxed font-medium text-balance text-sm">
-                  Hemos enviado los Términos y Condiciones a <strong>{formData.email}</strong>.<br/><br/>
-                  Nuestro equipo revisará tu solicitud y nos pondremos en contacto a la brevedad.
-                </p>
-              </div>
-              <button 
-                onClick={handleGoToTrialMessage} 
-                className="w-full bg-arista-dark hover:bg-arista text-white font-black py-6 rounded-full shadow-2xl shadow-arista-dark/20 transition-all uppercase tracking-widest text-xs"
-              >
-                CONTINUAR AL DEMO
-              </button>
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="w-24 h-24 bg-arista/10 text-arista rounded-full flex items-center justify-center mx-auto mb-8">
-                <Clock className="w-12 h-12" />
-              </div>
-              <h4 className="text-3xl font-black text-arista-dark mb-4 uppercase tracking-tighter text-balance leading-none">AVISO IMPORTANTE</h4>
-              <div className="bg-arista/5 p-8 rounded-[2rem] border border-arista/10 mb-12">
-                <p className="text-arista-dark text-lg font-bold leading-tight">
-                  Usted está ingresando a la versión de prueba que dura 7 días.
-                </p>
-              </div>
-              <button 
-                onClick={handleFinalAccess} 
-                className="w-full bg-arista hover:bg-arista-dark text-white font-black py-6 rounded-full shadow-2xl shadow-arista/20 transition-all uppercase tracking-widest text-xs"
-              >
-                ACEPTAR Y ENTRAR
+              <h4 className="text-3xl font-black text-arista-dark mb-4 uppercase tracking-tighter">¡SOLICITUD ENVIADA!</h4>
+              <p className="text-slate-500 mb-12 leading-relaxed font-medium text-balance">
+                Hemos recibido tus datos con éxito. Un asesor de Arista Studio se pondrá en contacto contigo a la brevedad.
+              </p>
+              <button onClick={handleFinalAccess} className="w-full bg-arista-dark hover:bg-arista text-white font-black py-6 rounded-full shadow-2xl shadow-arista-dark/20 transition-all uppercase tracking-widest text-xs">
+                INGRESAR A LA PLATAFORMA
               </button>
             </div>
           )}
@@ -256,6 +231,6 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
   );
 };
 
-import { X, Check, Clock } from 'lucide-react';
+import { X, Check, Loader2 } from 'lucide-react';
 
 export default DemoModal;

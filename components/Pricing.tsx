@@ -24,7 +24,7 @@ const Pricing: React.FC<PricingProps> = ({ onOpenDemo }) => {
           <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm flex flex-col">
             <h3 className="text-lg font-bold text-arista-dark mb-2">Mensual</h3>
             <div className="flex items-baseline gap-1 mb-6">
-              <span className="text-4xl font-black text-arista-dark">$36</span>
+              <span className="text-4xl font-black text-arista-dark">$35</span>
               <span className="text-slate-400 text-sm font-bold uppercase tracking-widest">USD / MES</span>
             </div>
             <p className="text-slate-500 text-sm mb-8 flex-1">
@@ -45,7 +45,7 @@ const Pricing: React.FC<PricingProps> = ({ onOpenDemo }) => {
             </div>
             <h3 className="text-lg font-bold text-arista-dark mb-2">Semestral</h3>
             <div className="flex items-baseline gap-1 mb-6">
-              <span className="text-4xl font-black text-arista-dark">$205</span>
+              <span className="text-4xl font-black text-arista-dark">$200</span>
               <span className="text-slate-400 text-sm font-bold uppercase tracking-widest">USD / 6 MESES</span>
             </div>
             <p className="text-slate-500 text-sm mb-8 flex-1">
@@ -66,7 +66,7 @@ const Pricing: React.FC<PricingProps> = ({ onOpenDemo }) => {
             </div>
             <h3 className="text-lg font-bold text-white mb-2">Anual</h3>
             <div className="flex items-baseline gap-1 mb-6">
-              <span className="text-4xl font-black text-white">$389</span>
+              <span className="text-4xl font-black text-white">$378</span>
               <span className="text-slate-400 text-sm font-bold uppercase tracking-widest">USD / AÑO</span>
             </div>
             <p className="text-slate-300 text-sm mb-8 flex-1">
