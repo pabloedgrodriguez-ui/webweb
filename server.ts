@@ -23,8 +23,6 @@ async function startServer() {
         return res.status(400).json({ error: "Faltan campos obligatorios" });
       }
 
-      const isAlum = interest === 'ARISTASTUDIO ALUM (Premium)';
-      const subject = `NUEVO LEAD ${isAlum ? '🔥 ALUM' : '💎'}: ${interest} - ${company}`;
       const recipients = ["pabloedgrodriguez@gmail.com", "aristastudiouno@gmail.com"];
 
       if (!process.env.RESEND_API_KEY) {
