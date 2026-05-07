@@ -28,7 +28,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenDemo }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="text-6xl md:text-8xl tracking-tighter leading-none mb-8"
+            className="text-4xl sm:text-6xl md:text-8xl tracking-tighter leading-none mb-8"
           >
             <span className="text-arista-dark font-extrabold">ARISTA</span>
             <span className="text-arista font-light">ESTUDIO</span>
@@ -38,7 +38,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenDemo }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl text-slate-500 font-medium leading-relaxed max-w-3xl mb-8"
+            className="text-lg sm:text-xl md:text-2xl text-slate-500 font-medium leading-relaxed max-w-3xl mb-8"
           >
             La plataforma definitiva para la industria del vidrio y aluminio. 
             Ahora en todos tus dispositivos.
