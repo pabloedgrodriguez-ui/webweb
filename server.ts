@@ -4,8 +4,19 @@ import path from "path";
 import { Resend } from "resend";
 import cors from "cors";
 
-// Initialize Resend with API Key
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend Client lazily to handle missing API keys gracefully at startup
+let resendClient: Resend | null = null;
+
+function getResendClient() {
+  if (!resendClient) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      throw new Error("RESEND_API_KEY is missing");
+    }
+    resendClient = new Resend(apiKey);
+  }
+  return resendClient;
+}
 
 async function startServer() {
   const app = express();
@@ -25,11 +36,14 @@ async function startServer() {
 
       const recipients = ["pabloedgrodriguez@gmail.com", "aristastudiouno@gmail.com"];
 
-      if (!process.env.RESEND_API_KEY) {
-        console.error("CRITICAL: RESEND_API_KEY is missing in environment variables.");
+      let client;
+      try {
+        client = getResendClient();
+      } catch (err) {
+        console.error("CRITICAL: Resend API Key is missing.");
         return res.status(500).json({ 
-          error: "Configuración incompleta", 
-          details: "El servidor no tiene configurada la clave de API de Resend." 
+          error: "Configuración del servidor incompleta", 
+          details: "La clave de API de Resend no está configurada en las variables de entorno." 
         });
       }
 
@@ -45,7 +59,7 @@ async function startServer() {
       // Individually attempt to send to each destination
       const results = await Promise.all(recipients.map(async (toEmail) => {
         try {
-          const { data, error } = await resend.emails.send({
+          const { data, error } = await client.emails.send({
             from: "Arista Studio <onboarding@resend.dev>",
             to: toEmail,
             subject: subject,

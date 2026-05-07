@@ -58,19 +58,30 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      // Check if the response is JSON before parsing
+      const contentType = response.headers.get('content-type');
+      let data: any = {};
+      
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        // If it's not JSON, it's likely an HTML error page from the server
+        const text = await response.text();
+        console.error('Server returned non-JSON response:', text);
+        throw new Error('El servidor no respondió correctamente. Verifica la configuración de la clave de API.');
+      }
 
       if (!response.ok) {
         // Provide more specific error messages based on server response
-        if (data.details && data.details.includes('verified')) {
-          throw new Error('Error: Destinatario no verificado en Resend (Sandbox).');
+        if (data.details && typeof data.details === 'string' && data.details.includes('verified')) {
+          throw new Error('Error: Los destinatarios deben estar verificados en el Sandbox de Resend.');
         }
         throw new Error(data.error || 'Error al enviar la solicitud');
       }
 
       setStep(2);
     } catch (err: any) {
-      console.error(err);
+      console.error('Fetch error:', err);
       setError(err.message || 'Hubo un problema al enviar tu solicitud. Por favor intenta de nuevo.');
     } finally {
       setIsLoading(false);
