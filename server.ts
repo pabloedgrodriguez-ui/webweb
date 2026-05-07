@@ -5,46 +5,45 @@ import { Resend } from "resend";
 import cors from "cors";
 import "dotenv/config";
 
-// Initialize Resend Client lazily
-let resendClient: Resend | null = null;
+// --- CONFIGURATION ---
+const PORT = 3000;
+const RECIPIENTS = ["pabloedgrodriguez@gmail.com", "aristastudiouno@gmail.com"];
 
-function getResendClient() {
-  if (!resendClient) {
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-      throw new Error("RESEND_API_KEY is missing");
-    }
-    resendClient = new Resend(apiKey);
-  }
-  return resendClient;
+// --- INITIALIZATION ---
+let _resend: Resend | null = null;
+function getResend() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) throw new Error("RESEND_API_KEY_MISSING");
+  if (!_resend) _resend = new Resend(apiKey);
+  return _resend;
 }
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
 
+  // 1. Basic Middlewares
   app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Debug logging
+  // 2. Logging
   app.use((req, res, next) => {
-    console.log(`[Incoming Request] ${req.method} ${req.url}`);
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     next();
   });
 
-  // Health check
-  app.get(["/health", "/api/health"], (req, res) => {
+  // 3. API ROUTES (Explicitly defined before Vite)
+  const api = express.Router();
+
+  api.get("/health", (req, res) => {
     res.json({ 
       status: "ok", 
       resendConfigured: !!process.env.RESEND_API_KEY,
-      env: process.env.NODE_ENV || 'development',
       timestamp: new Date().toISOString()
     });
   });
 
-  // API Route for demo requests - Changed to a more unique path
-  app.post(["/demo-submission", "/api/demo-submission"], async (req, res) => {
+  api.post("/demo-request", async (req, res) => {
     try {
       const { name, company, whatsapp, email, interest } = req.body;
 
@@ -52,97 +51,65 @@ async function startServer() {
         return res.status(400).json({ error: "Faltan campos obligatorios" });
       }
 
-      const recipients = ["pabloedgrodriguez@gmail.com", "aristastudiouno@gmail.com"];
-
-      let client;
+      let resend;
       try {
-        client = getResendClient();
-      } catch (err) {
-        console.error("CRITICAL: Resend API Key is missing.");
-        return res.status(500).json({ 
-          error: "Configuración del servidor incompleta", 
-          details: "La clave de API de Resend no está configurada en las variables de entorno." 
-        });
+        resend = getResend();
+      } catch (e) {
+        return res.status(500).json({ error: "Configuración del servidor: RESEND_API_KEY no encontrada." });
       }
 
-      // Basic backend email validation to prevent Resend validation errors
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        return res.status(400).json({ error: "Email del solicitante inválido" });
-      }
-
-      const isAlum = interest === 'ARISTASTUDIO ALUM (Premium)';
+      const isAlum = interest.includes('ALUM');
       const subject = `NUEVO LEAD ${isAlum ? '🔥 ALUM' : '💎'}: ${interest} - ${company}`;
 
-      // Individually attempt to send to each destination
-      const results = await Promise.all(recipients.map(async (toEmail) => {
-        try {
-          const { data, error } = await client.emails.send({
-            from: "Arista Studio <onboarding@resend.dev>",
-            to: toEmail,
-            subject: subject,
-            html: `
-              <div style="font-family: sans-serif; padding: 20px; color: #333; max-width: 600px; border: 1px solid #eee; border-radius: 12px; background-color: #ffffff;">
-                <h2 style="color: #000; border-bottom: 2px solid #000; padding-bottom: 10px; margin-top: 0; text-align: center;">NUEVA SOLICITUD ACCESO</h2>
-                
-                <div style="margin: 20px 0; padding: 15px; background-color: #f8f9fa; border-radius: 8px;">
-                  <p style="margin: 5px 0;"><strong>PRODUCTO:</strong> <span style="color: #0070f3; font-weight: bold;">${interest.toUpperCase()}</span></p>
-                </div>
-
-                <div style="background: #ffffff; padding: 0; margin: 20px 0;">
-                  <h3 style="margin-top: 0; font-size: 14px; text-transform: uppercase; color: #888; letter-spacing: 1px; border-bottom: 1px solid #eee; padding-bottom: 5px;">Datos del Interesado</h3>
-                  <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-                    <tr><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666; width: 120px;"><strong>👤 Nombre:</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #000;">${name}</td></tr>
-                    <tr><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>🏢 Empresa:</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #000;">${company || 'No especificada'}</td></tr>
-                    <tr><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>📱 WhatsApp:</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #000;">${whatsapp}</td></tr>
-                    <tr><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>📧 Email:</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #000;">${email}</td></tr>
-                  </table>
-                </div>
-                
-                <p style="color: #999; font-size: 11px; margin-top: 40px; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
-                  Este es un mensaje automático generado por el formulario de Arista Studio.
-                </p>
+      const sendPromises = RECIPIENTS.map(to => {
+        return resend.emails.send({
+          from: "Arista Studio <onboarding@resend.dev>",
+          to: to,
+          subject: subject,
+          html: `
+            <div style="font-family: sans-serif; padding: 20px; color: #333; max-width: 600px; border: 1px solid #eee; border-radius: 12px; background-color: #ffffff;">
+              <h2 style="color: #000; border-bottom: 2px solid #000; padding-bottom: 10px; margin-top: 0; text-align: center;">NUEVA SOLICITUD ACCESO</h2>
+              
+              <div style="margin: 20px 0; padding: 15px; background-color: #f8f9fa; border-radius: 8px;">
+                <p style="margin: 5px 0;"><strong>PRODUCTO:</strong> <span style="color: #0070f3; font-weight: bold;">${interest.toUpperCase()}</span></p>
               </div>
-            `,
-          });
-          return { toEmail, success: !error, error };
-        } catch (err) {
-          return { toEmail, success: false, error: err };
-        }
-      }));
 
-      const successfulSends = results.filter(r => r.success);
-      
-      if (successfulSends.length === 0) {
-        console.error("All email attempts failed. Possible sandbox restriction or invalid key.", results);
-        return res.status(500).json({ 
-          error: "Error al enviar el correo", 
-          details: "Resend rechazó la solicitud. Verifica que el correo de destino esté verificado en sandbox si usas onboarding@resend.dev",
-          errorLog: results.map(r => r.error)
+              <div style="background: #ffffff; padding: 0; margin: 20px 0;">
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666; width: 120px;"><strong>👤 Nombre:</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">${name}</td></tr>
+                  <tr><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>🏢 Empresa:</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">${company || 'N/A'}</td></tr>
+                  <tr><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>📱 WhatsApp:</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">${whatsapp}</td></tr>
+                  <tr><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>📧 Email:</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">${email}</td></tr>
+                </table>
+              </div>
+              
+              <p style="color: #999; font-size: 11px; margin-top: 40px; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
+                Este es un mensaje automático de Arista Studio.
+              </p>
+            </div>
+          `
         });
+      });
+
+      const results = await Promise.all(sendPromises);
+      const errors = results.filter(r => r.error);
+
+      if (errors.length === RECIPIENTS.length) {
+        console.error("Resend Error:", errors);
+        return res.status(500).json({ error: "Error de envío", details: errors[0].error?.message });
       }
 
-      res.status(200).json({ 
-        success: true, 
-        message: `Correo enviado con éxito a ${successfulSends.length} destinatarios.`,
-        results 
-      });
-    } catch (err) {
-      console.error("Server error:", err);
-      res.status(500).json({ error: "Error interno del servidor" });
+      res.status(200).json({ success: true, message: "Enviado con éxito" });
+
+    } catch (err: any) {
+      console.error("API Error:", err);
+      res.status(500).json({ error: "Error interno", message: err.message });
     }
   });
 
-  // Global error handler
-  app.use((err: any, req: any, res: any, next: any) => {
-    console.error('Unhandled Error:', err);
-    res.status(500).json({ 
-      error: 'Error interno del servidor', 
-      message: err.message || 'Error desconocido' 
-    });
-  });
+  app.use("/api", api);
 
-  // Vite middleware for development
+  // 4. VITE / STATIC FILES
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -150,15 +117,21 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), "dist");
+    const distPath = path.resolve("dist");
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
 
+  // 5. Global Error Handler
+  app.use((err: any, req: any, res: any, next: any) => {
+    console.error('Critical Error:', err);
+    res.status(500).send('Algo salió mal en el servidor.');
+  });
+
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`>>> Servidor Arista Studio escuchando en puerto ${PORT}`);
   });
 }
 
