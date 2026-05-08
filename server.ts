@@ -6,7 +6,7 @@ import cors from "cors";
 import "dotenv/config";
 
 // --- CONFIGURATION ---
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const RECIPIENTS = ["pabloedgrodriguez@gmail.com", "aristastudiouno@gmail.com"];
 
 // --- INITIALIZATION ---
