@@ -90,8 +90,7 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
   };
 
   const handleFinalAccess = () => {
-    window.open('https://aristastudio01.vercel.app/', '_blank');
-    onClose();
+    window.location.href = 'https://www.aristastudioalum.com.ar/';
   };
 
   return (
