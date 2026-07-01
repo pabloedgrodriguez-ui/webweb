@@ -124,8 +124,9 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
                 <div>
                   <p className="font-bold text-slate-800 mb-1">2. Modelo de Suscripción y Pagos</p>
                   <ul className="list-disc ml-4 space-y-1">
-                    <li><span className="font-bold">Costo:</span> El acceso al servicio tiene un valor mensual de $36 USD.</li>
-                    <li><span className="font-bold">Activación:</span> Las cuentas se activan manualmente tras la confirmación del pago vía WhatsApp.</li>
+                    <li><span className="font-bold">Prueba Gratis:</span> Se otorga un período de prueba gratuito de 7 días, con acceso al 100% de las funciones del programa (100% funcional) sin cargo alguno.</li>
+                    <li><span className="font-bold">Costo posterior:</span> Finalizado el período de prueba, el acceso al servicio tiene un valor mensual de $36 USD.</li>
+                    <li><span className="font-bold">Activación:</span> Las cuentas (tanto de prueba como pagas) se activan manualmente tras la confirmación del alta vía WhatsApp.</li>
                     <li><span className="font-bold">Dispositivos:</span> El uso de la cuenta está limitado a un máximo de dos (2) dispositivos simultáneos por usuario.</li>
                   </ul>
                 </div>
@@ -209,7 +210,7 @@ const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
                           : 'border-slate-100 text-slate-400 hover:border-slate-200'
                       }`}
                     >
-                      {opt}
+                      {opt === 'Demo 7 Días' ? 'Prueba Gratis 7 Días (100% Funcional)' : opt}
                     </button>
                   ))}
                 </div>

@@ -15,8 +15,29 @@ const Pricing: React.FC<PricingProps> = ({ onOpenDemo }) => {
             Planes que se pagan solos
           </h2>
           <p className="text-slate-500 font-medium max-w-2xl mx-auto">
-            Inversión inteligente para potenciar tu producción.
+            Inversión inteligente para potenciar tu producción. Elegí la opción perfecta para tu taller.
           </p>
+        </div>
+
+        {/* Banner de Prueba de 7 Días Gratis */}
+        <div className="mb-16 bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/20 rounded-3xl p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-8 max-w-5xl mx-auto shadow-sm">
+          <div className="space-y-3 text-center md:text-left">
+            <span className="bg-emerald-500 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
+              PRUEBA SIN CARGO
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-black text-arista-dark tracking-tight">
+              ¡Probá Arista Gratis por 7 Días!
+            </h3>
+            <p className="text-slate-500 text-sm sm:text-base font-medium leading-relaxed max-w-2xl">
+              Acceso completo y 100% funcional a todas las herramientas: optimización de cortes de perfiles de 6m, presupuestador técnico, y generador de PDF. Sin compromisos ni pagos inmediatos.
+            </p>
+          </div>
+          <button
+            onClick={onOpenDemo}
+            className="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white font-black px-8 py-5 rounded-2xl text-xs uppercase tracking-widest transition-all shadow-lg shadow-emerald-500/20 hover:scale-105 active:scale-95"
+          >
+            Comenzar Prueba Gratis
+          </button>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">

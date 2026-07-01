@@ -19,8 +19,11 @@ const Hero: React.FC<HeroProps> = ({ onOpenDemo }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="flex items-center gap-3 mb-6"
+            className="flex flex-col items-center gap-3 mb-6"
           >
+            <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-black tracking-widest px-4 py-2 rounded-full uppercase mb-2 inline-block shadow-sm">
+              🔥 SEMANA DE PRUEBA GRATIS - 100% FUNCIONAL
+            </span>
             <span className="text-[11px] font-bold tracking-[0.4em] text-arista uppercase">Software de Ingeniería</span>
           </motion.div>
 
@@ -41,7 +44,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenDemo }) => {
             className="text-lg sm:text-xl md:text-2xl text-slate-500 font-medium leading-relaxed max-w-3xl mb-8"
           >
             La plataforma definitiva para la industria del vidrio y aluminio. 
-            Ahora en todos tus dispositivos.
+            Probá Arista gratis por una semana con acceso total e ilimitado.
           </motion.p>
 
           <motion.div 
@@ -65,14 +68,17 @@ const Hero: React.FC<HeroProps> = ({ onOpenDemo }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4"
+            className="flex flex-col items-center gap-3"
           >
             <button 
               onClick={onOpenDemo}
-              className="bg-arista-dark text-white font-bold px-12 py-5 rounded-xl text-sm uppercase tracking-widest transition-all hover:bg-arista shadow-xl hover:scale-105 active:scale-95"
+              className="bg-arista-dark text-white font-black px-12 py-5 rounded-xl text-xs uppercase tracking-widest transition-all hover:bg-arista shadow-xl hover:scale-105 active:scale-95 border-2 border-transparent"
             >
-              Solicitar Demo Gratis
+              Iniciar 7 Días de Prueba Gratis
             </button>
+            <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">
+              ✨ Programa 100% funcional sin límites de herramientas
+            </p>
           </motion.div>
         </div>
 
