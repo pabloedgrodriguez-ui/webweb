@@ -17,7 +17,7 @@ const AlumSection: React.FC<{ onOpenDemo: () => void }> = ({ onOpenDemo }) => {
               Módulo Especializado ALUM
             </h2>
             <p className="text-lg text-slate-500 font-medium leading-relaxed mb-8">
-              Ingeniería de precisión para carpintería de aluminio. AristaStudio automatiza el cálculo de perfiles, herrajes y optimización de corte para las líneas más utilizadas del mercado.
+              La solución definitiva para optimizar y calcular los <strong>descuentos para construir una abertura de aluminio</strong> con total precisión. Diseñado especialmente para fabricar una <strong>ventana de aluminio</strong>, <strong>puerta de aluminio</strong> y toda clase de <strong>aberturas de aluminio</strong> sin margen de error, automatizando el desglose de perfiles, herrajes y optimización de corte.
             </p>
             
             <ul className="space-y-4 mb-10">

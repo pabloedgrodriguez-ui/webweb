@@ -21,7 +21,8 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenDemo }) => {
     { label: 'Arista ALUM', id: 'alum', isNew: true },
     { label: 'Problema', id: 'problema' },
     { label: 'Solución', id: 'solucion' },
-    { label: 'Precios', id: 'precios' }
+    { label: 'Precios', id: 'precios' },
+    { label: 'Preguntas', id: 'faq' }
   ];
 
   const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {

@@ -5,6 +5,7 @@ import Problem from './components/Problem';
 import Features from './components/Features';
 import AlumSection from './components/AlumSection';
 import Pricing from './components/Pricing';
+import FAQ from './components/FAQ';
 import WhatsAppButton from './components/WhatsAppButton';
 import Testimonials from './components/Testimonials';
 import Technology from './components/Technology';
@@ -27,6 +28,7 @@ const App: React.FC = () => {
         <Features />
         <AlumSection onOpenDemo={openDemo} />
         <Pricing onOpenDemo={openDemo} />
+        <FAQ />
       </main>
 
       <footer className="bg-slate-950 text-slate-400 py-20 text-center text-sm border-t border-slate-900">
